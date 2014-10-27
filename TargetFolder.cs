@@ -20,5 +20,13 @@ namespace FileSync
         /// Flag whether just use the directory as provide-only source or include it fully into the sync process.
         /// </summary>
         public bool ReadOnly { get; set; }
+
+        /// <summary>
+        /// Implicit string cast.
+        /// </summary>
+        public static implicit operator string(TargetFolder folder)
+        {
+            return folder.Path;
+        }
     }
 }

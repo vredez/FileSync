@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("FileSync")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("P3 Ingenieurgesellschaft mbH")]
+[assembly: AssemblyCompany("vredez")]
 [assembly: AssemblyProduct("FileSync")]
-[assembly: AssemblyCopyright("Copyright © P3 Ingenieurgesellschaft mbH 2014")]
+[assembly: AssemblyCopyright("Copyright © vredez 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -50,6 +50,4 @@ using System.Windows;
 //
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.*")]

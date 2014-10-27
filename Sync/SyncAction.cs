@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace FileSync.Synchronization
+namespace FileSync.Sync
 {
     /// <summary>
     /// Different types of synchronizaton actions.
@@ -107,6 +107,11 @@ namespace FileSync.Synchronization
                     File.Copy(source, destination, true);
                     return;
             }
+        }
+
+        public override string ToString()
+        {
+            return Description;
         }
     }
 }

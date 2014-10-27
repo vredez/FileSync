@@ -14,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WinForms = System.Windows.Forms;
+using FileSync.Sync;
+using IO = System.IO;
 
 namespace FileSync
 {
@@ -23,6 +25,9 @@ namespace FileSync
     public partial class MainWindow : Window
     {
         ObservableCollection<TargetFolder> folders;
+        Synchronization sync;
+
+        bool cancel;
 
         public ObservableCollection<TargetFolder> Folders
         {
@@ -72,6 +77,111 @@ namespace FileSync
             else if (sender == button_clear) // Clear
             {
                 Folders.Clear();
+            }
+
+            button_execute.IsEnabled = false;
+        }
+
+        void OnAnalyze(object sender, RoutedEventArgs e)
+        {
+            var source = new SyncSource();
+            var syncTargets = new List<string>();
+
+            foreach (var folder in Folders)
+            {
+                source.AddSourceFolder(folder.Path);
+                if (!folder.ReadOnly)
+                {
+                    syncTargets.Add(folder.Path);
+                }
+            }
+
+            sync = Synchronization.FromSource(source, syncTargets);
+            sync.Progress += OnSyncProgress;
+
+            listview_actions.ItemsSource = sync.Actions;
+
+            button_execute.Content = string.Format("Execute {0} Action{1}", sync.Actions.Count, sync.Actions.Count != 1 ? "s" : string.Empty);
+            button_execute.IsEnabled = true;
+        }
+
+        void OnExecute(object sender, RoutedEventArgs e)
+        {
+            progressbar.Value = 0;
+            progressbar.Visibility = System.Windows.Visibility.Visible;
+            button_execute.Content = "Cancel";
+            
+            button_execute.Click -= OnExecute;
+            button_execute.Click += OnCancel;
+
+            cancel = false;
+
+            Task.Run(() =>
+            {
+                sync.Execute();
+            });
+        }
+
+        void OnSyncProgress(object sender, ProgressEventArgs e)
+        {
+            e.Cancel = cancel;
+            Dispatcher.Invoke(() =>
+            {
+                progressbar.Value = e.Progress * progressbar.Maximum;
+
+                if (e.Progress == 1f)
+                {
+                    button_execute.Click -= OnCancel;
+                    button_execute.Click += OnExecute;
+
+                    button_execute.Content = "Execute";
+                    button_execute.IsEnabled = false;
+                    progressbar.Visibility = System.Windows.Visibility.Hidden;
+                }
+            });
+        }
+
+        void OnCancel(object sender, RoutedEventArgs e)
+        {
+            cancel = true;
+            button_execute.IsEnabled = false;
+        }
+
+        void OnDragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var folders = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                foreach (var folder in folders)
+                {
+                    if (!IO.Directory.Exists(folder))
+                    {
+                        return;
+                    }
+                }
+                
+                e.Effects = DragDropEffects.Link;
+                e.Handled = true;
+            }
+        }
+
+        void OnDrop(object sender, DragEventArgs e)
+        {
+            if (((int)e.Effects & (int)DragDropEffects.Link) != (int)DragDropEffects.None)
+            {
+                var folders = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                foreach (var folder in folders)
+                {
+                    if (!Folders.Any(f => f.Path == folder))
+                    {
+                        Folders.Add(new TargetFolder { Path = folder, ReadOnly = false });
+                    }
+                }
             }
         }
     }

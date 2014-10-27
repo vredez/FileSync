@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace FileSync.Synchronization
+namespace FileSync.Sync
 {
     /// <summary>
     /// Contains information about a file in the synchronization context.

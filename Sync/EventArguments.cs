@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileSync.Synchronization
+namespace FileSync.Sync
 {
     /// <summary>
     /// Arguments provding progress infomation and cancellation functionality. 

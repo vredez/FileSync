@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace FileSync.Synchronization
+namespace FileSync.Sync
 {
     public class SyncSource
     {
@@ -46,7 +46,7 @@ namespace FileSync.Synchronization
         /// </summary>
         public void AddSourceFolder(string folder)
         {
-            int relativePathStartIndex = folder.Length;
+            int relativePathStartIndex = folder.Length + 1; //+1 because of separator char
             var dirInfo = new DirectoryInfo(folder);
 
             //add new folders
@@ -70,6 +70,10 @@ namespace FileSync.Synchronization
                 if (!files.ContainsKey(ff.RelativePath))
                 {
                     files.Add(ff.RelativePath, ff);
+                }
+                else
+                {
+                    files[ff.RelativePath].UpdateSource(ff.NewestVersion);
                 }
             }
         }

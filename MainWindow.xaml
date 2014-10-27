@@ -1,16 +1,18 @@
 ﻿<Window x:Class="FileSync.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        Title="FileSync" Height="350" Width="525"
+        Style="{StaticResource ResourceKey=style_window}" WindowStartupLocation="CenterScreen" Icon="1414448474_126874.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="2"/>
+            <RowDefinition Height="70"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="207*"/>
-                <ColumnDefinition Width="3"/>
+                <ColumnDefinition Width="200*"/>
+                <ColumnDefinition Width="2"/>
                 <ColumnDefinition Width="304*"/>
             </Grid.ColumnDefinitions>
             <DockPanel Margin="5" Grid.Column="0">
@@ -19,21 +21,44 @@
                     <Button x:Name="button_remove" Margin="0,0,5,5" Click="OnFolderButtonClicked" IsEnabled="{Binding SelectedItems.Count, ElementName=listview_folders}">Remove</Button>
                     <Button x:Name="button_clear" Margin="0,0,5,5" Click="OnFolderButtonClicked" IsEnabled="{Binding Folders.Count}">Clear</Button>
                 </StackPanel>
-                <ListView x:Name="listview_folders" DockPanel.Dock="Top" ItemsSource="{Binding Path=Folders}" >
+                <ListView x:Name="listview_folders" DockPanel.Dock="Top" ItemsSource="{Binding Path=Folders}" AllowDrop="True" DragOver="OnDragOver" Drop="OnDrop" >
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
                     <ListView.View>
                         <GridView AllowsColumnReorder="False">
-                            <GridViewColumn Header="Path" Width="Auto" DisplayMemberBinding="{Binding Path, Mode=TwoWay}" />
                             <GridViewColumn Header="Read-Only" Width="Auto">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding ReadOnly, Mode=TwoWay}" />
+                                        <CheckBox IsChecked="{Binding ReadOnly, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
+                            <GridViewColumn Header="Path" Width="Auto" DisplayMemberBinding="{Binding Path, Mode=TwoWay}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </DockPanel>
+            <GridSplitter Grid.Column="1" />
+            <DockPanel Margin="5" Grid.Column="2">
+                <Button x:Name="button_simluate" DockPanel.Dock="Top" Margin="0,0,0,5" Click="OnAnalyze" IsEnabled="{Binding Items.Count, ElementName=listview_folders}">Analyze</Button>
+                <ListView x:Name="listview_actions" DockPanel.Dock="Top" >
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="False">
+                            <GridViewColumn Header="Action" Width="Auto" DisplayMemberBinding="{Binding Type}" />
+                            <GridViewColumn Header="Destination" Width="Auto" DisplayMemberBinding="{Binding Destination}" />
+                            <GridViewColumn Header="Source" Width="Auto" DisplayMemberBinding="{Binding Source}" />
                         </GridView>
                     </ListView.View>
                 </ListView>
             </DockPanel>
         </Grid>
+        <GridSplitter Grid.Row="1" />
+        <DockPanel Grid.Row="2">
+            <Button x:Name="button_execute" DockPanel.Dock="Top" HorizontalAlignment="Left" Margin="5" IsEnabled="False" Click="OnExecute">Execute</Button>
+            <ProgressBar x:Name="progressbar" DockPanel.Dock="Top" Margin="5,0,5,5" Visibility="Hidden" />
+        </DockPanel>
     </Grid>
 </Window>

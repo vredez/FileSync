@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace FileSync.Synchronization
+namespace FileSync.Sync
 {
     class Synchronization
     {
@@ -67,9 +67,16 @@ namespace FileSync.Synchronization
                 {
                     var newFile = new FileInfo(Path.Combine(target, file.RelativePath));
                     
-                    if (newFile.FullName != file.NewestVersion.FullName)
+                    if(newFile.Exists)
                     {
-                        actions.Add(new SyncAction(file.NewestVersion.FullName, newFile.FullName, newFile.Exists));
+                        if(newFile.LastWriteTimeUtc != file.NewestVersion.LastWriteTimeUtc)
+                        {
+                            actions.Add(new SyncAction(file.NewestVersion.FullName, newFile.FullName, true));
+                        }
+                    }
+                    else
+                    {
+                        actions.Add(new SyncAction(file.NewestVersion.FullName, newFile.FullName, false));
                     }
                 }
             }
@@ -96,7 +103,14 @@ namespace FileSync.Synchronization
 
             foreach (var action in actions)
             {
-                action.Execute();
+                try
+                {
+                    action.Execute();
+                }
+                catch (Exception ex)
+                {
+                    OnErrorOccured(new ErrorEventArgs(ex));
+                }
 
                 //report progress
                 var progress = new ProgressEventArgs(++currentStep / maxSteps);

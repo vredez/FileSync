@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>1414448474_126874.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -54,12 +57,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Synchronization\EventArguments.cs" />
-    <Compile Include="Synchronization\SyncAction.cs" />
-    <Compile Include="Synchronization\SyncFile.cs" />
-    <Compile Include="Synchronization\SyncSource.cs" />
-    <Compile Include="Synchronization\Synchronization.cs" />
-    <Compile Include="TargetDirectory.cs" />
+    <Compile Include="Sync\EventArguments.cs" />
+    <Compile Include="Sync\SyncAction.cs" />
+    <Compile Include="Sync\SyncFile.cs" />
+    <Compile Include="Sync\SyncSource.cs" />
+    <Compile Include="Sync\Synchronization.cs" />
+    <Compile Include="TargetFolder.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -72,6 +75,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Style.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -99,6 +106,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="1414448474_126874.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
