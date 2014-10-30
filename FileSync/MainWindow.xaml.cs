@@ -43,6 +43,7 @@ namespace FileSync
             InitializeComponent();
 
             DataContext = this;
+            AnalyzeArguments();
         }
 
         /// <summary>
@@ -58,10 +59,7 @@ namespace FileSync
   
                     if (fbd.ShowDialog() == WinForms.DialogResult.OK)
                     {
-                        if (!Folders.Any(f => f.Path == fbd.SelectedPath))
-                        {
-                            Folders.Add(new TargetFolder { Path = fbd.SelectedPath });
-                        }
+                        AddFolder(fbd.SelectedPath);
                     }
                 }
             }
@@ -177,11 +175,46 @@ namespace FileSync
 
                 foreach (var folder in folders)
                 {
-                    if (!Folders.Any(f => f.Path == folder))
-                    {
-                        Folders.Add(new TargetFolder { Path = folder, ReadOnly = false });
-                    }
+                    AddFolder(folder);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Adds a folder to the list.
+        /// </summary>
+        void AddFolder(string path)
+        {
+            if (!Folders.Any(f => f.Path == path))
+            {
+                Folders.Add(new TargetFolder { Path = path, ReadOnly = false });
+            }
+        }
+
+        /// <summary>
+        /// Analyzes the commandline arguments.
+        /// </summary>
+        void AnalyzeArguments()
+        {
+            var cmdArgs = new ArgumentParser();
+            
+            foreach (var folder in cmdArgs.Keyless)
+            {
+                if (IO.Directory.Exists(folder))
+                {
+                    AddFolder(folder);
+                }
+            }
+
+            if (cmdArgs.KeyExists("background"))
+            {
+                WindowState = System.Windows.WindowState.Minimized;
+            }
+
+            if (cmdArgs.KeyExists("autostart"))
+            {
+                OnAnalyze(null, null);
+                OnExecute(null, null);
             }
         }
     }
